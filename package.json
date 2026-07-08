@@ -1,0 +1,31 @@
+{
+  "name": "pi-tmux-follow-bottom",
+  "version": "0.1.0",
+  "description": "Keep pi visible at the bottom inside tmux by refreshing the tmux client after pi output events.",
+  "keywords": [
+    "pi-package",
+    "pi",
+    "tmux",
+    "extension",
+    "terminal",
+    "tui"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedTrait/pi-tmux-follow-bottom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RedTrait/pi-tmux-follow-bottom/issues"
+  },
+  "homepage": "https://github.com/RedTrait/pi-tmux-follow-bottom#readme",
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions"
+    ]
+  }
+}
