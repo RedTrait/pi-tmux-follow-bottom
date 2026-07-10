@@ -20,6 +20,7 @@ That asks tmux to move the client viewport back to the bottom after pi renders n
 - Works only when pi is running inside tmux.
 - Coalesces high-frequency streaming updates to avoid excessive tmux refresh calls.
 - Handles assistant streaming, tool streaming, final message renders, and turn-end status updates.
+- Also follows the bottom while the slash-command popup is opened and navigated.
 - Requires no custom tmux keybinding.
 
 ## Requirements
@@ -59,7 +60,7 @@ After installation, restart pi or run:
 
 ## Configuration
 
-The extension supports two environment variables.
+The extension supports these environment variables.
 
 ### `PI_TMUX_FOLLOW_MIN_INTERVAL_MS`
 
@@ -81,7 +82,7 @@ Use a larger value if you want fewer `tmux refresh-client` calls during fast str
 
 ### `PI_TMUX_FOLLOW_DELAY_MS`
 
-Delay after a pi event before refreshing tmux.
+Delay after a pi output event before refreshing tmux.
 
 Default:
 
@@ -96,6 +97,56 @@ export PI_TMUX_FOLLOW_DELAY_MS=50
 ```
 
 A short delay gives pi time to render the update before tmux moves the viewport back to the bottom.
+
+### `PI_TMUX_FOLLOW_EDITOR_DELAY_MS`
+
+Delay after editor input before refreshing tmux for the slash-command popup.
+
+Default:
+
+```bash
+35
+```
+
+Example:
+
+```bash
+export PI_TMUX_FOLLOW_EDITOR_DELAY_MS=60
+```
+
+Increase this if the slash-command popup renders slightly later in your terminal.
+
+### `PI_TMUX_FOLLOW_SLASH_POPUP_WINDOW_MS`
+
+How long after typing `/` the extension should keep following popup navigation keys such as arrows, page up/down, tab, and typed filter characters.
+
+Default:
+
+```bash
+15000
+```
+
+Example:
+
+```bash
+export PI_TMUX_FOLLOW_SLASH_POPUP_WINDOW_MS=30000
+```
+
+### `PI_TMUX_FOLLOW_EDITOR_KEYS`
+
+Enable or disable the editor wrapper used for slash-command popup following.
+
+Default:
+
+```bash
+1
+```
+
+Disable it if another extension's custom editor conflicts with this wrapper:
+
+```bash
+export PI_TMUX_FOLLOW_EDITOR_KEYS=0
+```
 
 ## Behavior notes
 
@@ -117,7 +168,9 @@ The extension subscribes to these pi events:
 - `tool_execution_end`
 - `turn_end`
 
-After an event, it schedules a throttled tmux refresh:
+It also wraps the pi editor component in TUI mode. When `/` opens the slash-command popup, the wrapper refreshes tmux after the popup renders and while you navigate/filter the popup.
+
+After an event or relevant editor key, it schedules a throttled tmux refresh:
 
 ```bash
 tmux refresh-client -D 999999
